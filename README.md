@@ -7,4 +7,4 @@ This ZNC module provides support for logging messages into a MySQL database. It 
 This module requires:
 * Python 3
 * pymysql package
-* Additionally (and obviously) (znc with modpython module enabled(http://wiki.znc.in/Modpython#Module_types)
+* Additionally (and obviously) [znc with modpython module enabled](http://wiki.znc.in/Modpython#Module_types)
