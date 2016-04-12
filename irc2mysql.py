@@ -1,4 +1,4 @@
-# import znc
+import znc
 import pymysql.cursors
 import re
 import datetime
@@ -87,7 +87,6 @@ class znc2mysql:
     def __del__(self):
         self.connection.close()
 
-'''
 class irc2mysql(znc.Module):
     description = "Passively record IRC logs to a MySQL database"
     regex = re.compile('^\seen (.+)$')
@@ -123,7 +122,7 @@ class irc2mysql(znc.Module):
                     logger.debug('%s was last seen %s saying, "%s"' % (queried_nick, seen['seen'], seen['message']))
         except Exception as e:
             self.PutModule('<<error>> parsing query (%s) for %s' % (str(e), msg))
-'''
+
 if __name__ == '__main__':
     print('<<<active>>>')
     # Fetch last seen
