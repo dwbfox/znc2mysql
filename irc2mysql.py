@@ -1,36 +1,28 @@
-import znc
+# import znc
 import pymysql.cursors
 import re
 import datetime
+import json
 import pretty
 import logging
+
 
 
 class znc2mysql:
 
     connection = None
-
+    settings = None
     def __init__(self):
+        with open('settings.json', 'r') as f:
+            settings = json.loads(f.read())
+            print(settings)
         self.connection = pymysql.connect(
-            host='localhost',
-            user='root',
-            password='root',
-            db='irc',
+            host=settings['mysql']['host'],
+            user=settings['mysql']['username'],
+            password=settings['mysql']['password'],
+            db=settings['mysql']['database'],
             cursorclass=pymysql.cursors.DictCursor
         )
-
-
-    def OnLoad(self, args, msg):
-        self.PutModule("<<irc2mysql loaded.>>")
-        return znc.CONTINUE
-
-
-    def OnChanMsg(self, nick, channel, message):
-        msg = message.s
-        name = nick.GetNick()
-        chan = channel.GetName()
-        self.insertUser(name, msg)
-        self.insertMessage(name, chan, msg)
 
 
     def insertMessage(self, user, channel, message):
@@ -95,7 +87,7 @@ class znc2mysql:
     def __del__(self):
         self.connection.close()
 
-
+'''
 class irc2mysql(znc.Module):
     description = "Passively record IRC logs to a MySQL database"
     regex = re.compile('^\seen (.+)$')
@@ -131,11 +123,11 @@ class irc2mysql(znc.Module):
                     logger.debug('%s was last seen %s saying, "%s"' % (queried_nick, seen['seen'], seen['message']))
         except Exception as e:
             self.PutModule('<<error>> parsing query (%s) for %s' % (str(e), msg))
-
+'''
 if __name__ == '__main__':
     print('<<<active>>>')
     # Fetch last seen
     db = znc2mysql()
-    nick = 'pepee'
+    nick = 'reddit-bot'
     seen = db.userLastSeen(nick)
     print('%s was last seen %s saying, "%s"' % (nick, seen['seen'], seen['message']))
