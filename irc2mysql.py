@@ -93,4 +93,4 @@ if __name__ == '__main__':
     db = znc2mysql()
     nick = 'reddit-bot'
     seen = db.userLastSeen(nick)
-    print(db.settings['cmds']['seen']['response_fmt'] % (nick, seen['seen'], seen['message']))
+    print(db.settings['cmds']['seen']['response_fmt'] % (nick, seen['seen']q, seen['message']))
