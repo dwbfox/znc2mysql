@@ -14,12 +14,13 @@ class znc2mysql:
     def __init__(self):
         logger = logging.basicConfig(filename='irc2mysql.log', level=logging.DEBUG)
         with open('settings.json', 'r') as f:
-            settings = json.loads(f.read())
+            self.settings = json.loads(f.read())
+
         self.connection = pymysql.connect(
-            host=settings['mysql']['host'],
-            user=settings['mysql']['username'],
-            password=settings['mysql']['password'],
-            db=settings['mysql']['database'],
+            host=self.settings['mysql']['host'],
+            user=self.settings['mysql']['username'],
+            password=self.settings['mysql']['password'],
+            db=self.settings['mysql']['database'],
             cursorclass=pymysql.cursors.DictCursor
         )
 
@@ -45,7 +46,7 @@ class znc2mysql:
                 uid = self.getUIDByNick(nick)
                 cursor.execute("SELECT last_seen, last_message FROM `users` WHERE nick=%s", nick)
                 results = cursor.fetchone()
-                seen['seen'] = pretty.date(results['last_seen'], short=False)
+                seen['seen'] = pretty.date(results['last_seen'], short=True)
                 seen['message'] = results['last_message']
                 return seen
             except Exception as e:
@@ -82,7 +83,8 @@ class znc2mysql:
 
 
     def __del__(self):
-        self.connection.close()
+        if self.connection:
+            self.connection.close()
 
 
 if __name__ == '__main__':
@@ -91,4 +93,4 @@ if __name__ == '__main__':
     db = znc2mysql()
     nick = 'reddit-bot'
     seen = db.userLastSeen(nick)
-    print('%s was last seen %s saying, "%s"' % (nick, seen['seen'], seen['message']))
+    print(db.settings['cmds']['seen']['response_fmt'] % (nick, seen['seen'], seen['message']))
