@@ -1,7 +1,7 @@
-#import znc
-import irc2mysql
+import znc
+import zncmysql
 
-class irc2mysql(znc.Module):
+class znc2mysql(znc.Module):
     description = "Passively record IRC logs to a MySQL database"
     regex = re.compile('^\seen (.+)$')
     logger = None
@@ -15,7 +15,7 @@ class irc2mysql(znc.Module):
         msg = message.s
         name = nick.GetNick()
         chan = channel.GetName()
-        ircdb = znc2mysql()
+        ircdb = zncmysql()
         ircdb.insertUser(name, msg)
         ircdb.insertMessage(name, chan, msg)
         
