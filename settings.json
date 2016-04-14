@@ -1,0 +1,14 @@
+{
+    "cmds": {
+        "seen": {
+            "response_fmt": "%s was seen %s minutes ago saying: \"%s\"."
+        }
+    },
+    "mysql":
+    {
+        "host": "localhost",
+        "username": "root",
+        "password": "root",
+        "database": "irc"
+    }
+}
