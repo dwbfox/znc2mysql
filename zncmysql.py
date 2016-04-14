@@ -86,9 +86,7 @@ class zncmysql:
 
 
 if __name__ == '__main__':
-    print('<<<active>>>')
-    # Fetch last seen
-    db = znc2mysql()
+    db = zncmysql()
     nick = 'reddit-bot'
     seen = db.userLastSeen(nick)
     print('%s was last seen %s saying, "%s"' % (nick, seen['seen'], seen['message']))

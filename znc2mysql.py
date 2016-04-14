@@ -1,5 +1,5 @@
 import znc
-import zncmysql
+import zncmysql.zncmysql
 
 class znc2mysql(znc.Module):
     description = "Passively record IRC logs to a MySQL database"
