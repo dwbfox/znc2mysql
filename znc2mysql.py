@@ -1,5 +1,6 @@
 import znc
-import zncmysql.zncmysql
+import re
+from znc2mysql import *
 
 class znc2mysql(znc.Module):
     description = "Passively record IRC logs to a MySQL database"
@@ -18,7 +19,7 @@ class znc2mysql(znc.Module):
         ircdb = zncmysql()
         ircdb.insertUser(name, msg)
         ircdb.insertMessage(name, chan, msg)
-        
+
         try:
             matches = self.regex.match(msg)
             if matches is not None:
