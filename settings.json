@@ -1,6 +1,7 @@
 {
     "cmds": {
         "seen": {
+            "callback": "",
             "response_fmt": "%s was seen %s minutes ago saying: \"%s\"."
         }
     },
