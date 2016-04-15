@@ -7,4 +7,16 @@ This ZNC module provides support for logging messages into a MySQL database. It 
 This module requires:
 * Python 3
 * pymysql package
-* Additionally (and obviously) [znc with modpython module enabled](http://wiki.znc.in/Modpython#Module_types)
+* Additionally (and obviously) [znc with modpython module enabled](http://wiki.znc.in/Modpython)
+
+
+## setup
+#### Configure database connection settings
+Open `settings.json` and fill in the MySQL connection info
+
+#### Install the module
+Move `znc2mysql.py` and `settings.json` to your znc modules folder (typically `~/.znc/modules`)
+
+#### Load the module
+`loadmod znc2mysql
+
