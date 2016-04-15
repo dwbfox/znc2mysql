@@ -18,5 +18,5 @@ Open `settings.json` and fill in the MySQL connection info
 Move `znc2mysql.py` and `settings.json` to your znc modules folder (typically `~/.znc/modules`)
 
 #### Load the module
-`loadmod znc2mysql
+`loadmod znc2mysql`
 
