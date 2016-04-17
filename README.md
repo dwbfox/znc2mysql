@@ -11,12 +11,24 @@ This module requires:
 
 
 ## setup
+#### Set up the database
+Create a new MySQL database, and run the included schema (`db.sql`) to create the required tables.
+
 #### Configure database connection settings
-Open `settings.json` and fill in the MySQL connection info
+open `znc2mysql.py` and edit the following to reflect your database settings:
+```python
+    self.connection = pymysql.connect(
+        host='localhost',
+        user='root',
+        password='root',
+        db='irc',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+```
 
 #### Install the module
-Move `znc2mysql.py` and `settings.json` to your znc modules folder (typically `~/.znc/modules`)
+Move `znc2mysql.py` to your znc modules folder (typically `~/.znc/modules`)
 
-#### Load the module
+#### Load the module in znc
 `loadmod znc2mysql`
 
