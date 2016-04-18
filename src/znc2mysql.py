@@ -1,65 +1,34 @@
 import znc
 import re
+import sys
 import os
-import datetime
-import json
 import pretty
 import logging
 import pymysql.cursors
+import json
+import datetime
 
-class znc2mysql(znc.Module):
-    description = "Passively record IRC logs to a MySQL database"
-    regex = re.compile(b'^\seen (.+)$')
-    logger = None
-
-    def OnLoad(self, args, msg):
-        self.PutModule('<<irc2mysql loaded.>>')
-        self.PutModule('<<Dir: %s' % os.getcwd())
-        return znc.CONTINUE
-
-
-    def OnChanMsg(self, nick, channel, message):
-        try:
-            msg = message.s.encode('utf-8')
-            name = nick.GetNick()
-            chan = channel.GetName()
-            ircdb = zncmysql()
-            ircdb.insertUser(name, msg)
-            ircdb.insertMessage(name, chan, msg)
-
-            matches = self.regex.match(msg)
-            if matches is not None:
-                queried_nick = matches.group(1)
-                seen = db.userLastSeen(queried_nick)
-                if seen is None:
-                    logger.debug('Queried user not found: %s' % queried_nick)
-                    self.PutModule('Queried user not found: %s' % queried_nick)
-                else:
-                    self.PutModule('%s was last seen %s saying, "%s"' % (queried_nick, seen['seen'], seen['message']))
-                    logger.debug('%s was last seen %s saying, "%s"' % (queried_nick, seen['seen'], seen['message']))
-        except Exception as e:
-            self.PutModule('<<error>> parsing query (%s) for %s' % (str(e), msg))
-            raise
-        finally:
-            return znc.CONTINUE
-
+###########################################
+#  MySQL class to handle 
+#  Database connection and recording
+###########################################
 class zncmysql:
 
     connection = None
     logger = None
-    settings = None
 
     def __init__(self):
         logger = logging.basicConfig(filename='irc2mysql.log', level=logging.DEBUG)
-        with open('settings.json', 'r') as f:
-            settings = json.loads(f.read())
-        self.connection = pymysql.connect(
-            host=settings['mysql']['host'],
-            user=settings['mysql']['username'],
-            password=settings['mysql']['password'],
-            db=settings['mysql']['database'],
-            cursorclass=pymysql.cursors.DictCursor
-        )
+        try:
+            self.connection = pymysql.connect(
+                host='localhost',
+                user='root',
+                password='root',
+                db='irc',
+                cursorclass=pymysql.cursors.DictCursor
+            )
+        except Exception as e:
+            logger.warning('Unable to connect to database: %s' % str())
 
 
     def insertMessage(self, user, channel, message):
@@ -123,8 +92,42 @@ class zncmysql:
         self.connection.close()
 
 
-if __name__ == '__main__':
-    db = zncmysql()
-    nick = 'reddit-bot'
-    seen = db.userLastSeen(nick)
-    print('%s was last seen %s saying, "%s"' % (nick, seen['seen'], seen['message']))
+###########################################
+#   Main znc module subclass
+###########################################
+class znc2mysql(znc.Module):
+    description = "Store IRC logs to a MySQL database"
+    regex = re.compile(b'^\seen (.+)$')
+    logger = None
+
+    def OnLoad(self, args, msg):
+        self.PutModule('<<irc2mysql loaded.>>')
+        self.PutModule('<<Dir: %s' % os.getcwd())
+        return znc.CONTINUE
+
+
+    def OnChanMsg(self, nick, channel, message):
+        try:
+            msg = message.s.encode('utf-8')
+            name = nick.GetNick()
+            chan = channel.GetName()
+            ircdb = zncmysql()
+            ircdb.insertUser(name, msg)
+            ircdb.insertMessage(name, chan, msg)
+            matches = self.regex.match(msg)
+            if matches is not None:
+                queried_nick = matches.group(1)
+                seen = db.userLastSeen(queried_nick)
+                if seen is None:
+                    logger.info('Queried user not found: %s' % queried_nick)
+                    self.PutModule('Queried user not found: %s' % queried_nick)
+                else:
+                    self.PutModule('%s was last seen %s saying, "%s"' % (queried_nick, seen['seen'], seen['message']))
+                    logger.info('%s was last seen %s saying, "%s"' % (queried_nick, seen['seen'], seen['message']))
+        except Exception as e:
+            logger.info('<<error>> %s' % str(e))
+        finally:
+            return znc.CONTINUE
+
+
+
