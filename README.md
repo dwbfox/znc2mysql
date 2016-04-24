@@ -15,7 +15,10 @@ This module requires:
 setup
 ---------
 #### Set up the database
-Create a new MySQL database, and run the included schema (located in `src/db.sql`) to create the required tables.
+Create a new MySQL database, and run the included schema (located in `src/db.sql`) to create the required tables. In example,
+```shell
+mysql -u root -p yourdb < db.sql
+```
 
 #### Configure database connection settings
 open `znc2mysql.py` and edit the following to reflect your database settings:
