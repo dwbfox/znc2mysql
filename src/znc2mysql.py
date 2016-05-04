@@ -64,8 +64,7 @@ class zncmysql:
         with self.connection.cursor() as cursor:
             try:
                 cursor.execute("SELECT id FROM `users` WHERE nick=%s LIMIT 1", nick)
-                result = cursor.fetchone()
-                return result['id']
+                return cursor.fetchone()['id']
             except:
                 return None
 
