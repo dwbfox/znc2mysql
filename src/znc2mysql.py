@@ -2,7 +2,6 @@ import znc
 import re
 import sys
 import os
-import pretty
 import logging
 import pymysql.cursors
 import json
@@ -52,7 +51,7 @@ class zncmysql:
                 uid = self.getUIDByNick(nick)
                 cursor.execute("SELECT last_seen, last_message FROM `users` WHERE nick=%s", nick)
                 results = cursor.fetchone()
-                seen['seen'] = pretty.date(results['last_seen'], short=False)
+                seen['seen'] = results['last_seen']
                 seen['message'] = results['last_message']
                 return seen
             except Exception as e:
@@ -92,10 +91,11 @@ class zncmysql:
         self.connection.close()
 
 
-###########################################
-#   Main znc module subclass
-###########################################
 class znc2mysql(znc.Module):
+    """znc2mysql
+    ZNC module that facilitates the logging 
+    functionliaty"""
+
     description = "Store IRC logs to a MySQL database"
     regex = re.compile(b'^\seen (.+)$')
     logger = None
